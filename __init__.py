@@ -6,25 +6,34 @@ class HendiHeater(ActorBase):
     max_power = Property.Number("Limit Max Power (%)", configurable=True, default_value=100, unit="%")
     power = 0
     pwm = None
+    pwm_running = False
 
     def init(self):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(int(self.onoff_pin), GPIO.OUT)
         GPIO.setup(int(self.power_pin), GPIO.OUT)
         GPIO.output(int(self.onoff_pin), 0)
-        self.Power = int(self.max_power)
         self.pwm = GPIO.PWM(int(self.power_pin, int(self.pwm_freq))
 
-    def on(self, power):
+    def on(self, power = 0):
         self.power = min(int(power), int(self.max_power))
-        self.pwm.start(int(self.power))
-        if(power > 0):
+        if self.pwm_running == False:
+            self.pwm.start(int(self.power))
+            self.pwm_running = True
+        else:
+            self.pwm.ChangeDutyCycle(int(self.power))
+        if(self.power > 0):
             GPIO.output(int(self.onoff_pin), 1)
 
-    def set_power(self, power):
+    def set_power(self, power = 0):
         self.power = min(int(power), int(self.max_power))
-        self.pwm.ChangeDutyCycle(int(self.power))
+        if self.pwm_running == False:
+            self.pwm.start(int(self.power))
+            self.pwm_running = True
+        else:
+            self.pwm.ChangeDutyCycle(int(self.power))
 
     def off(self):
         self.pwm.stop()
+        self.pwm_running = False
         GPIO.output(int(self.onoff_pin), 0)
