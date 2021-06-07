@@ -1,6 +1,19 @@
+import time
+from collections import deque
+
 from modules import cbpi
 from modules.core.props import Property
 from modules.core.hardware import ActorBase
+from modules.core.controller import KettleController
+
+try:
+    import RPi.GPIO as GPIO
+    GPIO.setmode(GPIO.BCM)
+
+except Exception as e:
+    print
+    e
+    pass
 
 @cbpi.actor
 class HendiHeater(ActorBase):
