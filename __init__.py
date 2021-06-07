@@ -62,7 +62,9 @@ class GradientPowerControl(KettleController):
     lookback_time = Property.Number("Lookback Time (s)", configurable = True, default_value = 15, unit = "s")
     mash_power_limit = Property.Number("Maximum Mash Power (%)", configurable = True, default_value = 50, unit = "%")
     boil_power = Property.Number("Boil Power (%)", configurable = True, default_value = 40, unit = "%")
-    boil_threshold = Property.Number("Boil Power Threshold", configurable = True, default_value = 90, unit = "°C")
+    boil_threshold = Property.Number("Boil Power Threshold (°C)", configurable = True, default_value = 90, unit = "°C")
+
+    power = 0
 
     def run(self):
         
