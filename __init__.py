@@ -17,7 +17,7 @@ class HendiHeater(ActorBase):
         GPIO.setup(int(self.onoff_pin), GPIO.OUT)
         GPIO.setup(int(self.power_pin), GPIO.OUT)
         GPIO.output(int(self.onoff_pin), 0)
-        self.pwm = GPIO.PWM(int(self.power_pin, int(self.pwm_freq))
+        self.pwm = GPIO.PWM(int(self.power_pin, int(self.pwm_freq)))
 
     def on(self, requested_power = 0):
         self.power = min(int(requested_power), int(self.power_limit))
