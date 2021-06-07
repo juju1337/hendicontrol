@@ -21,6 +21,7 @@ class HendiHeater(ActorBase):
     power_pin = Property.Select("Power Control GPIO", options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27])
     pwm_freq = Property.Number("PWM Frequency (Hz)", configurable = True, default_value = 100, unit = "Hz")
     power_limit = Property.Number("Maximum Power (%)", configurable = True, default_value = 100, unit = "%")
+
     power = 0
     pwm = None
     pwm_running = False
@@ -63,10 +64,9 @@ class GradientPowerControl(KettleController):
     boil_power = Property.Number("Boil Power (%)", configurable = True, default_value = 40, unit = "%")
     boil_threshold = Property.Number("Boil Power Threshold", configurable = True, default_value = 90, unit = "°C")
 
-    def init(self):
-        pass
-
     def run(self):
+        
+        while self.is_running():
 
     def stop(self):
         super(KettleController, self).stop()
