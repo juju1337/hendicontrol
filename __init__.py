@@ -73,7 +73,7 @@ class GradientPowerControl(KettleController):
         boil_power = float(self.p_boil_power)
         boil_threshold = float(self.p_boil_threshold)
 
-        temp_array = deque(maxlen=lookback_time) #lookback array
+        temp_array = deque(maxlen = lookback_time) #lookback array
         for i in range(0, lookback_time): #initialize all elements with current temperature
             temp_array.append(self.get_temp())
 
@@ -84,19 +84,25 @@ class GradientPowerControl(KettleController):
             gradient = temp_array[-1] - temp_array[0] #gradient = first and last element
             temp_array.append(current_temp) #update array
 
-            diff = abs(target_temp - current_temp)
-            self.power = mash_power_limit - (mash_power_limit / ((0.5 * diff) + 1)) #calculate power
+            diff = abs(target_temp - current_temp) #calculate new mash power
+            self.power = mash_power_limit - (mash_power_limit / ((0.5 * diff) + 1))
             self.power = round(self.power, 1)
 
-            if current_temp >= boil_threshold: #above boil threshold reduce power
-                self.actor_power(boil_power)
-                self.heater_on(power = boil_power)
-            elif current_temp >= target_temp - (gradient * gradient_factor): #switch off heater depending on gradient
+            if target_temp >= boil_threshold: #boil mode (max power until boil threshold is reached)
+                if current_temp >= boil_threshold:
+                    self.actor_power(boil_power)
+                    self.heater_on(power = boil_power)
+                else:
+                    self.actor_power(mash_power_limit)
+                    self.heater_on(power = mash_power_limit)
+            elif target_temp > 0: #mash mode (gradient and power control)
+                if current_temp >= target_temp - (gradient * gradient_factor):
+                    self.heater_off()
+                elif current_temp < target_temp:
+                    self.actor_power(self.power)
+                    self.heater_on(power = self.power)
+            else:
                 self.heater_off()
-            elif current_temp < target_temp: #heater on and update power
-                self.actor_power(self.power)
-                self.heater_on(power = self.power)
-            
             self.sleep(1)
 
     def stop(self):
