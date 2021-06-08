@@ -19,8 +19,8 @@ except Exception as e:
 class HendiHeater(ActorBase):
     onoff_pin = Property.Select("On/Off GPIO", options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27])
     power_pin = Property.Select("Power Control GPIO", options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27])
-    pwm_freq = Property.Number("PWM Frequency (Hz)", True, 100)
-    power_limit = Property.Number("Maximum Power (%)", True, 100)
+    pwm_freq = Property.Number("PWM Frequency (Hz)", True, 100, unit="Hz")
+    power_limit = Property.Number("Maximum Power (%)", True, 100, unit="%")
 
     power = 0
     pwm = None
@@ -31,11 +31,12 @@ class HendiHeater(ActorBase):
         GPIO.setup(int(self.onoff_pin), GPIO.OUT)
         GPIO.setup(int(self.power_pin), GPIO.OUT)
         GPIO.output(int(self.onoff_pin), 0)
-        self.pwm = GPIO.PWM(int(self.power_pin, int(self.pwm_freq)))
 
     def on(self, requested_power = 0):
         self.power = min(int(requested_power), int(self.power_limit))
         if self.pwm_running == False:
+            if self.pwm = None:
+                self.pwm = GPIO.PWM(int(self.power_pin, int(self.pwm_freq)))
             self.pwm.start(int(self.power))
             self.pwm_running = True
         else:
@@ -46,6 +47,8 @@ class HendiHeater(ActorBase):
     def set_power(self, requested_power = 0):
         self.power = min(int(requested_power), int(self.power_limit))
         if self.pwm_running == False:
+            if self.pwm = None:
+                self.pwm = GPIO.PWM(int(self.power_pin, int(self.pwm_freq)))
             self.pwm.start(int(self.power))
             self.pwm_running = True
         else:
@@ -58,11 +61,11 @@ class HendiHeater(ActorBase):
 
 @cbpi.controller
 class GradientPowerControl(KettleController):
-    p_gradient_factor = Property.Number("Gradient Factor", True, 1)
-    p_lookback_time = Property.Number("Lookback Time (s)", True, 15)
-    p_mash_power_limit = Property.Number("Maximum Mash Power (%)", True, 50)
-    p_boil_power = Property.Number("Boil Power (%)", True, 40)
-    p_boil_threshold = Property.Number("Boil Power Threshold (°C)", True, 90)
+    p_gradient_factor = Property.Number("Gradient Factor", True, 1, unit="")
+    p_lookback_time = Property.Number("Lookback Time (s)", True, 15, unit="s")
+    p_mash_power_limit = Property.Number("Maximum Mash Power (%)", True, 50, unit="%")
+    p_boil_power = Property.Number("Boil Power (%)", True, 40, unit="%")
+    p_boil_threshold = Property.Number("Boil Power Threshold (C)", True, 90, unit="C")
 
     power = 0
 
