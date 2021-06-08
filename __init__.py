@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import time
 from collections import deque
 
@@ -35,7 +36,7 @@ class HendiHeater(ActorBase):
     def on(self, requested_power = 0):
         self.power = min(int(requested_power), int(self.power_limit))
         if self.pwm_running == False:
-            if self.pwm = None:
+            if self.pwm == None:
                 self.pwm = GPIO.PWM(int(self.power_pin, int(self.pwm_freq)))
             self.pwm.start(int(self.power))
             self.pwm_running = True
@@ -47,7 +48,7 @@ class HendiHeater(ActorBase):
     def set_power(self, requested_power = 0):
         self.power = min(int(requested_power), int(self.power_limit))
         if self.pwm_running == False:
-            if self.pwm = None:
+            if self.pwm == None:
                 self.pwm = GPIO.PWM(int(self.power_pin, int(self.pwm_freq)))
             self.pwm.start(int(self.power))
             self.pwm_running = True
@@ -65,7 +66,7 @@ class GradientPowerControl(KettleController):
     p_lookback_time = Property.Number("Lookback Time (s)", True, 15, unit="s")
     p_mash_power_limit = Property.Number("Maximum Mash Power (%)", True, 50, unit="%")
     p_boil_power = Property.Number("Boil Power (%)", True, 40, unit="%")
-    p_boil_threshold = Property.Number("Boil Power Threshold (C)", True, 90, unit="C")
+    p_boil_threshold = Property.Number("Boil Power Threshold (°C)", True, 90, unit="°C")
 
     power = 0
 
