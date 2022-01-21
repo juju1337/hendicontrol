@@ -95,15 +95,12 @@ class GradientPowerControl(KettleController):
                 else:
                     self.actor_power(mash_power_limit)
                     self.heater_on(power = mash_power_limit)
-            elif target_temp > 0: #mash mode (gradient and power control)
+            else: #mash mode (gradient and power control)
                 if current_temp >= target_temp - (gradient * gradient_factor):
                     self.heater_off()
-                elif current_temp < target_temp:
+                else:
                     self.actor_power(self.power)
                     self.heater_on(power = self.power)
-            else:
-                self.heater_off()
-            self.sleep(1)
 
     def stop(self):
         super(KettleController, self).stop()
